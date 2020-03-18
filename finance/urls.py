@@ -24,6 +24,7 @@ from finance import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('auth_base.urls')),
+    path('tracker/', include('mf_tracker.urls')),
     path('openapi/', get_schema_view(title='Finance', version='1.0', public=True), name='api'),
     path('docs/', TemplateView.as_view(template_name='index.html', ), ),
 ]

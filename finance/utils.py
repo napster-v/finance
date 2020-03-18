@@ -644,7 +644,7 @@ class SuccessAPIRenderer(BaseRenderer):
             elif data.__contains__('data'):
                 return json.dumps(data)
             else:
-                return json.dumps({"data": data})
+                return json.dumps({"data": data}, sort_keys=True)
         return b''
 
 
@@ -708,6 +708,7 @@ def youtube_url_validator(value):
     result = re.search('^https://yout{1}', value)
     if not result:
         raise ValidationError('Provided URL is not a valid YouTube link.')
+
 
 def get_profile_pic_from_url(url):
     r = requests.get(url)
