@@ -2,13 +2,18 @@ from django.db.models import Avg, Sum
 from rest_framework import serializers
 
 from finance.serializers import AppBaseSerializer
-from mf_tracker.models import Transaction, UserChosenFund
+from mf_tracker.models import AMC, Fund, Transaction, UserChosenFund
 
 
 class TransactionSerializer(AppBaseSerializer):
     fund = serializers.SerializerMethodField()
-    cap = serializers.SerializerMethodField()
+    # cap = serializers.SerializerMethodField()
     amc = serializers.SerializerMethodField()
+
+    # cmv = serializers.SerializerMethodField()
+
+    # duration = serializers.SerializerMethodField()
+    # completed = serializers.SerializerMethodField()
 
     class Meta:
         model = Transaction
@@ -25,6 +30,11 @@ class TransactionSerializer(AppBaseSerializer):
     @staticmethod
     def get_amc(obj: Transaction):
         return obj.amc
+
+    @staticmethod
+    def get_cmv(obj: Transaction):
+        latest_nav = UserChosenFundSerializer.get_latest_nav(obj)
+        return round(latest_nav * float(obj.units), 2)
 
 
 class UserChosenFundSerializer(AppBaseSerializer):
@@ -88,14 +98,29 @@ class UserChosenFundSerializer(AppBaseSerializer):
 
     @staticmethod
     def get_latest_nav(obj):
-        import httpx
-        url = "https://latest-mutual-fund-nav.p.rapidapi.com/fetchLatestNAV"
-        querystring = {"SchemeType": "All", "SchemeCode": f'{obj.fund.scheme_code}'}
-        headers = {
-            'x-rapidapi-host': "latest-mutual-fund-nav.p.rapidapi.com",
-            'x-rapidapi-key': "557074dc3dmsh01d5a278784ffd8p10ae33jsnbb1d38fad4f9"
-        }
-        response = httpx.get(url, headers=headers, params=querystring)
+        # import requests
+        # url = "https://latest-mutual-fund-nav.p.rapidapi.com/fetchLatestNAV"
+        # scheme_code = None
+        # if isinstance(obj, UserChosenFund):
+        #     scheme_code = obj.fund.scheme_code
+        # elif isinstance(obj, Transaction):
+        #     scheme_code = obj.fund.fund.scheme_code
+        # querystring = {"SchemeType": "All", "SchemeCode": f'{scheme_code}'}
+        # headers = {
+        #     'x-rapidapi-host': "latest-mutual-fund-nav.p.rapidapi.com",
+        #     'x-rapidapi-key': "557074dc3dmsh01d5a278784ffd8p10ae33jsnbb1d38fad4f9"
+        # }
+        # response = requests.get(url, headers=headers, params=querystring)
+        #
+        # return float(response.json()[0].get("Net Asset Value"))
+        return 25
 
-        return float(response.json()[0].get("Net Asset Value"))
-        # return 20
+
+class AMCSerializer(AppBaseSerializer):
+    class Meta:
+        model = AMC
+
+
+class FundSerializer(AppBaseSerializer):
+    class Meta:
+        model = Fund

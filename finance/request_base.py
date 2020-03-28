@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
@@ -45,3 +46,8 @@ class MultiSerializerViewSet(BaseViewSet):
 
 class AuthenticatedMultiSerializerViewSet(MultiSerializerViewSet, AuthenticationMixin):
     pass
+
+
+class FilterMixin(viewsets.ModelViewSet):
+    filterset_fields = None
+    filter_backends = [DjangoFilterBackend]

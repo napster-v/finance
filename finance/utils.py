@@ -644,7 +644,7 @@ class SuccessAPIRenderer(BaseRenderer):
             elif data.__contains__('data'):
                 return json.dumps(data)
             else:
-                return json.dumps({"data": data}, sort_keys=True)
+                return json.dumps({"data": data})
         return b''
 
 
